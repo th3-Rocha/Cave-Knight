@@ -9,6 +9,8 @@ public class Collectable : MonoBehaviour
 
     private Vector3 startPos;
 
+    public bool IsFluctuate = true;
+
     void Start()
     {
       
@@ -18,8 +20,10 @@ public class Collectable : MonoBehaviour
 
     void InitializeStartPosition()
     {
-        startPos = transform.position;
-        InvokeRepeating("Fluctuate", 0f, 0.1f); 
+        if(IsFluctuate){
+            startPos = transform.position;
+            InvokeRepeating("Fluctuate", 0f, 0.1f); 
+        }
     }
 
     void Fluctuate()

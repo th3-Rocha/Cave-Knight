@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     public float jumpCooldown = 0.1f;
     public int maxJumps = 2;
 
+    private bool isHurtCoroutineRunning;
     public bool isGrounded;
     private Rigidbody2D rb;
     private float lastJumpTime;
@@ -18,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public int jumpsPerformed;
     public float moveSpeed;
 
+    public bool hurt;
     private bool mirrorX;
     private  SpriteRenderer spriteRenderer;
 
@@ -37,6 +39,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if(hurt){
+            HurtPlayer();
+        }
+
         Input.GetAxis("Horizontal");
         // Check if the player is grounded
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
@@ -72,7 +78,7 @@ public class PlayerController : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         Move(horizontalInput);
 
-         if(isGrounded){
+         if(isGrounded ){
             if(horizontalInput != 0){
                 AnimatorPlayer.Play("WalkingPlayer");   
             }
@@ -81,21 +87,18 @@ public class PlayerController : MonoBehaviour
             }
         }else{
             if(isTouchingWall){
-                 AnimatorPlayer.Play("WallSlidePlayer"); 
+                    AnimatorPlayer.Play("WallSlidePlayer"); 
 
             }else{
-            if(rb.velocityY < 0){
-                AnimatorPlayer.Play("FallingPlayer"); 
+                if(rb.velocityY < 0){
+                    AnimatorPlayer.Play("FallingPlayer"); 
+
+                }
+                if(rb.velocityY > 0){
+                    AnimatorPlayer.Play("JumpingPlayer"); 
+                }
 
             }
-            if(rb.velocityY > 0){
-                AnimatorPlayer.Play("JumpingPlayer"); 
-            }
-
-            }
-
-           
-           
         }
 
     }
@@ -103,9 +106,11 @@ public class PlayerController : MonoBehaviour
 
     void Move(float direction)
     {
-        float horizontalVelocity = direction * moveSpeed; // Add a moveSpeed variable to control the movement speed
+        float horizontalVelocity = direction * moveSpeed;
         if(isGrounded){
+            
             rb.velocity = new Vector2(horizontalVelocity, rb.velocity.y);
+            
 
         }
         else{
@@ -176,6 +181,19 @@ public class PlayerController : MonoBehaviour
         }else if(mirrorX) {
              effector.GetComponent<SpriteRenderer>().flipX = false;
         }
+    }
+    void HurtPlayer(){
+        AnimatorPlayer.Play("HurtPlayer"); 
+
+        rb.velocity = Vector2.zero; // to not sum the velocity before
+        rb.AddForceY(3,ForceMode2D.Impulse);
+        if(!mirrorX){
+            rb.AddRelativeForceX(-3,ForceMode2D.Impulse);
+        }else{
+            rb.AddRelativeForceX(3,ForceMode2D.Impulse);
+        }
+        hurt = false;
+
     }
 
 }

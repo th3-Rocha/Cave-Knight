@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
                   
         }
          // Check if the player is touching a wall
-        isTouchingWall = Physics2D.Raycast(transform.position, Vector2.right  * (spriteRenderer.flipX ? -1 : 1) , 0.6f, wallLayer);
+        isTouchingWall = Physics2D.Raycast(transform.position, Vector2.right  * (spriteRenderer.flipX ? -1 : 1) , 0.7f, wallLayer);
 
         // Wall Jump
         if (isTouchingWall && Input.GetKeyDown(KeyCode.Space) && !isGrounded)

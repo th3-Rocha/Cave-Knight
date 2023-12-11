@@ -1,4 +1,4 @@
-Controler
+Controle
 
 movimentar = w-a-s-d ou setas
 
